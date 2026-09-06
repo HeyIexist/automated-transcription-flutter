@@ -472,21 +472,23 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   const SizedBox(height: 24),
                   _buildResultsPane(isDark),
                 ] else ...[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left Pane: Input & Samples
-                      Expanded(
-                        flex: 4,
-                        child: _buildInputPane(isDark),
-                      ),
-                      const SizedBox(width: 24),
-                      // Right Pane: Extracted Intelligence View
-                      Expanded(
-                        flex: 6,
-                        child: _buildResultsPane(isDark),
-                      ),
-                    ],
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Left Pane: Input & Samples
+                        Expanded(
+                          flex: 4,
+                          child: _buildInputPane(isDark),
+                        ),
+                        const SizedBox(width: 24),
+                        // Right Pane: Extracted Intelligence View
+                        Expanded(
+                          flex: 6,
+                          child: _buildResultsPane(isDark),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ],
@@ -948,7 +950,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     if (_isLoading) {
       return Container(
-        constraints: const BoxConstraints(minHeight: 520, minWidth: double.infinity),
+        width: double.infinity,
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: cardBg,
@@ -978,7 +980,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     if (_result == null) {
       return Container(
-        constraints: const BoxConstraints(minHeight: 520, minWidth: double.infinity),
+        width: double.infinity,
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: cardBg,
