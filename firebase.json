@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "meeting-intelligence",
     "public": "build/web",
     "ignore": [
       "firebase.json",
