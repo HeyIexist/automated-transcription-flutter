@@ -32,7 +32,7 @@ class MeetingApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: MaterialApp(
-        title: 'Meeting Intelligence & Action Extractor',
+        title: 'Meeting Intelligence',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,

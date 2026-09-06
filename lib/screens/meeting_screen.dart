@@ -537,7 +537,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Meeting Intelligence & Action Item Extractor',
+                      'Meeting Intelligence',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -964,7 +964,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
               CircularProgressIndicator(color: AppTheme.primaryBlue),
               SizedBox(height: 20),
               Text(
-                'Analyzing meeting transcript with Local LLM engine...',
+                'Analyzing meeting transcript with AI engine...',
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 8),
