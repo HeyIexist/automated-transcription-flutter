@@ -24,7 +24,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyB4cvdrOc5obQgrIw6zsnP1ZepYLr3rYN0',
-    appId: '1:39027424:web:1047863ceb7fb23d524685',
+    appId: '1:39027424:web:ba2e734163f07d18524685',
     messagingSenderId: '39027424',
     projectId: 'flutter-chat-app-348da',
     authDomain: 'meeting-intelligence.firebaseapp.com',
