@@ -635,13 +635,17 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             size: 16,
                             color: _inputMode == 0 ? Colors.white : Colors.grey,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Text Transcript',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: _inputMode == 0 ? Colors.white : Colors.grey,
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'Text Transcript',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: _inputMode == 0 ? Colors.white : Colors.grey,
+                              ),
                             ),
                           ),
                         ],
@@ -667,13 +671,17 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             size: 16,
                             color: _inputMode == 1 ? Colors.white : Colors.grey,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Audio Recording',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: _inputMode == 1 ? Colors.white : Colors.grey,
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'Audio Recording',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: _inputMode == 1 ? Colors.white : Colors.grey,
+                              ),
                             ),
                           ),
                         ],
@@ -979,10 +987,16 @@ class _MeetingScreenState extends State<MeetingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Toolbar
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 8,
             children: [
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -995,8 +1009,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.primaryBlue),
                     ),
                   ),
-                  if (_cloudSavedRecordId != null) ...[
-                    const SizedBox(width: 8),
+                  if (_cloudSavedRecordId != null)
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
@@ -1004,6 +1017,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.cloud_done_rounded, color: Colors.green, size: 14),
                           SizedBox(width: 6),
@@ -1014,10 +1028,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                         ],
                       ),
                     ),
-                  ],
                 ],
               ),
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: 6,
                 children: [
                   ElevatedButton.icon(
                     onPressed: _isSavingToCloud ? null : () => _saveToCloud(showSnackbar: true),
@@ -1031,7 +1046,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
                       elevation: 0,
                     ),
                   ),
-                  const SizedBox(width: 8),
                   ElevatedButton.icon(
                     onPressed: _copyResultToClipboard,
                     icon: const Icon(Icons.copy, size: 16),
