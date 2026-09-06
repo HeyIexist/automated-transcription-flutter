@@ -456,34 +456,43 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     return Scaffold(
       backgroundColor: bgColor,
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            _buildHeader(isDark),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Left Pane: Input & Samples
-                  Expanded(
-                    flex: 4,
-                    child: _buildInputPane(isDark),
-                  ),
-                  const SizedBox(width: 24),
-                  // Right Pane: Extracted Intelligence View
-                  Expanded(
-                    flex: 6,
-                    child: _buildResultsPane(isDark),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isNarrow = constraints.maxWidth < 950;
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                _buildHeader(isDark),
+                const SizedBox(height: 20),
+                if (isNarrow) ...[
+                  _buildInputPane(isDark),
+                  const SizedBox(height: 24),
+                  _buildResultsPane(isDark),
+                ] else ...[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Left Pane: Input & Samples
+                      Expanded(
+                        flex: 4,
+                        child: _buildInputPane(isDark),
+                      ),
+                      const SizedBox(width: 24),
+                      // Right Pane: Extracted Intelligence View
+                      Expanded(
+                        flex: 6,
+                        child: _buildResultsPane(isDark),
+                      ),
+                    ],
                   ),
                 ],
-              ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -501,92 +510,109 @@ class _MeetingScreenState extends State<MeetingScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor),
       ),
-      child: Row(
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 16,
+        runSpacing: 12,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.assignment_turned_in_rounded, color: AppTheme.primaryBlue, size: 28),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Meeting Intelligence & Action Item Extractor',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  child: const Icon(Icons.assignment_turned_in_rounded, color: AppTheme.primaryBlue, size: 28),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Extract executive summary, key decisions, and action items (Task, Owner, Due Date) with zero hallucination guarantee.',
-                  style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Meeting Intelligence & Action Item Extractor',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Extract executive summary, key decisions, and action items (Task, Owner, Due Date) with zero hallucination guarantee.',
+                        style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          if (user != null) ...[
-            const SizedBox(width: 16),
-            ElevatedButton.icon(
-              onPressed: () => _showCloudHistoryModal(context, user.uid, isDark),
-              icon: const Icon(Icons.cloud_done_rounded, color: Colors.white, size: 18),
-              label: const Text('Cloud History', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryBlue,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: borderColor),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 14,
+          if (user != null)
+            Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => _showCloudHistoryModal(context, user.uid, isDark),
+                  icon: const Icon(Icons.cloud_done_rounded, color: Colors.white, size: 18),
+                  label: const Text('Cloud History', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryBlue,
-                    child: Text(
-                      user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: borderColor),
+                  ),
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        user.name,
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      CircleAvatar(
+                        radius: 14,
+                        backgroundColor: AppTheme.primaryBlue,
+                        child: Text(
+                          user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
                       ),
-                      Text(
-                        user.email,
-                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            user.name,
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            user.email,
+                            style: const TextStyle(fontSize: 11, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 12),
+                      IconButton(
+                        icon: const Icon(Icons.logout_rounded, size: 18, color: Colors.redAccent),
+                        tooltip: 'Sign Out',
+                        onPressed: () => auth.logout(),
                       ),
                     ],
                   ),
-                  const SizedBox(width: 12),
-                  IconButton(
-                    icon: const Icon(Icons.logout_rounded, size: 18, color: Colors.redAccent),
-                    tooltip: 'Sign Out',
-                    onPressed: () => auth.logout(),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
         ],
       ),
     );
@@ -747,7 +773,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
               const SizedBox(height: 12),
             ],
             // Input TextField
-            Expanded(
+            SizedBox(
+              height: 250,
               child: TextField(
                 controller: _transcriptController,
                 maxLines: null,
