@@ -27,7 +27,7 @@ class DefaultFirebaseOptions {
     appId: '1:39027424:web:1047863ceb7fb23d524685',
     messagingSenderId: '39027424',
     projectId: 'flutter-chat-app-348da',
-    authDomain: 'flutter-chat-app-348da.firebaseapp.com',
+    authDomain: 'meeting-intelligence.firebaseapp.com',
     storageBucket: 'flutter-chat-app-348da.firebasestorage.app',
   );
 
