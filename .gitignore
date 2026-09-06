@@ -1,0 +1,91 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder has team settings, recommendations, and launch configurations that should be git committed.
+# However, if you prefer to ignore it, uncomment the following line:
+# .vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+ephemeral/
+
+# Symbol specification files
+flutter_*.png
+
+# Environment & credentials
+.env
+.env.local
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Symbol maps
+*.swm
+
+# Android related
+**/android/app/Debug
+**/android/app/Release
+**/android/app/profile
+**/android/app/src/Debug
+**/android/app/src/Release
+**/android/app/src/profile
+**/android/app/app.iml
+**/android/local.properties
+**/android/key.properties
+**/android/id_rsa
+**/android/app/google-services.json
+**/android/app/src/main/assets/
+**/android/app/build/
+**/android/captures/
+**/android/gradle/
+**/android/build/
+**/android/.gradle/
+**/android/app/outputs/
+**/android/app/intermediates/
+
+# iOS/macOS related
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flt
+**/ios/Runner/GeneratedPluginRegistrant.h
+**/ios/Runner/GeneratedPluginRegistrant.m
+**/ios/Runner/base.lproj/
+**/ios/Pods/
+**/ios/Runner.xcworkspace/
+**/macos/Flutter/ephemeral/
+**/macos/Pods/
+
+# Windows related
+**/windows/flutter/ephemeral/
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+**/windows/flutter/generated_plugins.cmake
+
+# Linux related
+**/linux/flutter/ephemeral/
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+**/linux/flutter/generated_plugins.cmake
