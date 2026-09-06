@@ -459,6 +459,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isNarrow = constraints.maxWidth < 950;
+          final paneHeight = (constraints.maxHeight - 160).clamp(550.0, 5000.0);
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
             child: Column(
@@ -468,24 +470,25 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 _buildHeader(isDark),
                 const SizedBox(height: 20),
                 if (isNarrow) ...[
-                  _buildInputPane(isDark),
+                  _buildInputPane(isDark, isExpanded: false),
                   const SizedBox(height: 24),
-                  _buildResultsPane(isDark),
+                  _buildResultsPane(isDark, isExpanded: false),
                 ] else ...[
-                  IntrinsicHeight(
+                  SizedBox(
+                    height: paneHeight,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         // Left Pane: Input & Samples
                         Expanded(
                           flex: 4,
-                          child: _buildInputPane(isDark),
+                          child: _buildInputPane(isDark, isExpanded: true),
                         ),
                         const SizedBox(width: 24),
                         // Right Pane: Extracted Intelligence View
                         Expanded(
                           flex: 6,
-                          child: _buildResultsPane(isDark),
+                          child: _buildResultsPane(isDark, isExpanded: true),
                         ),
                       ],
                     ),
@@ -619,10 +622,120 @@ class _MeetingScreenState extends State<MeetingScreen> {
     );
   }
 
-  Widget _buildInputPane(bool isDark) {
+  Widget _buildInputPane(bool isDark, {bool isExpanded = true}) {
     final cardBg = isDark ? AppTheme.surfaceCardDark : AppTheme.surfaceCardLight;
     final borderColor = isDark ? AppTheme.borderDark : AppTheme.borderLight;
     final inputBg = isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight;
+
+    final textFieldWidget = TextField(
+      controller: _transcriptController,
+      maxLines: null,
+      expands: true,
+      style: TextStyle(fontSize: 14, color: isDark ? Colors.white : Colors.black87, height: 1.5),
+      decoration: InputDecoration(
+        hintText: 'Paste meeting transcript here...\n\nExample:\n"Arjun: Riya, can you send the updated pricing sheet by Friday?\nRiya: Yes, I\'ll do that by Friday EOD."',
+        hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+        filled: true,
+        fillColor: inputBg,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: borderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: borderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 2),
+        ),
+      ),
+    );
+
+    final audioDropZoneWidget = Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: inputBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3), width: 2),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryBlue.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.cloud_upload_outlined,
+              size: 48,
+              color: AppTheme.primaryBlue,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Upload Meeting Audio File',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Transcribe speech-to-text and extract action items automatically.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 13, color: Colors.grey),
+          ),
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black26 : Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Text(
+              'Formats: .wav, .mp3, .m4a, .flac, .ogg',
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.grey),
+            ),
+          ),
+          if (_selectedAudioFileName != null) ...[
+            const SizedBox(height: 16),
+            Chip(
+              avatar: const Icon(Icons.audiotrack, size: 16, color: AppTheme.primaryBlue),
+              label: Text(_selectedAudioFileName!, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              backgroundColor: cardBg,
+            ),
+          ],
+          const SizedBox(height: 24),
+          SizedBox(
+            height: 48,
+            child: ElevatedButton.icon(
+              onPressed: _isLoading ? null : _pickAndProcessAudio,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryBlue,
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              icon: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    )
+                  : const Icon(Icons.folder_open_rounded, color: Colors.white),
+              label: Text(
+                _isLoading ? 'Transcribing & Extracting...' : 'Browse & Upload Audio File',
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -774,33 +887,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
               const SizedBox(height: 12),
             ],
             // Input TextField
-            SizedBox(
-              height: 250,
-              child: TextField(
-                controller: _transcriptController,
-                maxLines: null,
-                expands: true,
-                style: TextStyle(fontSize: 14, color: isDark ? Colors.white : Colors.black87, height: 1.5),
-                decoration: InputDecoration(
-                  hintText: 'Paste meeting transcript here...\n\nExample:\n"Arjun: Riya, can you send the updated pricing sheet by Friday?\nRiya: Yes, I\'ll do that by Friday EOD."',
-                  hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 13),
-                  filled: true,
-                  fillColor: inputBg,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: borderColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 2),
-                  ),
-                ),
-              ),
-            ),
+            if (isExpanded)
+              Expanded(child: textFieldWidget)
+            else
+              SizedBox(height: 250, child: textFieldWidget),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
@@ -826,92 +916,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
             ),
           ] else ...[
             // AUDIO UPLOAD MODE
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: inputBg,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3), width: 2),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryBlue.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.cloud_upload_outlined,
-                        size: 48,
-                        color: AppTheme.primaryBlue,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Upload Meeting Audio File',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Transcribe speech-to-text and extract action items automatically.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.black26 : Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'Formats: .wav, .mp3, .m4a, .flac, .ogg',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.grey),
-                      ),
-                    ),
-                    if (_selectedAudioFileName != null) ...[
-                      const SizedBox(height: 16),
-                      Chip(
-                        avatar: const Icon(Icons.audiotrack, size: 16, color: AppTheme.primaryBlue),
-                        label: Text(_selectedAudioFileName!, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                        backgroundColor: cardBg,
-                      ),
-                    ],
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        onPressed: _isLoading ? null : _pickAndProcessAudio,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryBlue,
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        icon: _isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                              )
-                            : const Icon(Icons.folder_open_rounded, color: Colors.white),
-                        label: Text(
-                          _isLoading ? 'Transcribing & Extracting...' : 'Browse & Upload Audio File',
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            if (isExpanded)
+              Expanded(child: audioDropZoneWidget)
+            else
+              audioDropZoneWidget,
           ],
 
           // Error Display
@@ -943,7 +951,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     );
   }
 
-  Widget _buildResultsPane(bool isDark) {
+  Widget _buildResultsPane(bool isDark, {bool isExpanded = true}) {
     final cardBg = isDark ? AppTheme.surfaceCardDark : AppTheme.surfaceCardLight;
     final borderColor = isDark ? AppTheme.borderDark : AppTheme.borderLight;
     final inputBg = isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight;
@@ -951,6 +959,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     if (_isLoading) {
       return Container(
         width: double.infinity,
+        height: isExpanded ? double.infinity : null,
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: cardBg,
@@ -981,6 +990,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     if (_result == null) {
       return Container(
         width: double.infinity,
+        height: isExpanded ? double.infinity : null,
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: cardBg,
@@ -1015,7 +1025,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     final res = _result!;
 
-    return SingleChildScrollView(
+    final resultsContent = SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1418,5 +1428,13 @@ class _MeetingScreenState extends State<MeetingScreen> {
         ],
       ),
     );
+
+    if (isExpanded) {
+      return SizedBox(
+        height: double.infinity,
+        child: resultsContent,
+      );
+    }
+    return resultsContent;
   }
 }
