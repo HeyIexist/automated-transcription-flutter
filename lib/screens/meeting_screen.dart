@@ -504,6 +504,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     final user = auth.currentUser;
 
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: cardBg,
@@ -514,44 +515,42 @@ class _MeetingScreenState extends State<MeetingScreen> {
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: 16,
-        runSpacing: 12,
+        runSpacing: 16,
         children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryBlue.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.assignment_turned_in_rounded, color: AppTheme.primaryBlue, size: 28),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Meeting Intelligence & Action Item Extractor',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black87,
-                        ),
+                child: const Icon(Icons.assignment_turned_in_rounded, color: AppTheme.primaryBlue, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Meeting Intelligence & Action Item Extractor',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Extract executive summary, key decisions, and action items (Task, Owner, Due Date) with zero hallucination guarantee.',
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Extract executive summary, key decisions, and action items (Task, Owner, Due Date) with zero hallucination guarantee.',
+                      style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           if (user != null)
             Wrap(
