@@ -949,6 +949,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     if (_isLoading) {
       return Container(
+        constraints: const BoxConstraints(minHeight: 520, minWidth: double.infinity),
+        padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(16),
@@ -977,6 +979,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     if (_result == null) {
       return Container(
+        constraints: const BoxConstraints(minHeight: 520, minWidth: double.infinity),
+        padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(16),
@@ -986,12 +990,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.analytics_outlined, size: 64, color: Colors.grey.withValues(alpha: 0.4)),
-              const SizedBox(height: 16),
+              Icon(Icons.analytics_outlined, size: 72, color: Colors.grey.withValues(alpha: 0.4)),
+              const SizedBox(height: 18),
               Text(
                 'No Transcript Analyzed Yet',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : Colors.black87,
                 ),
@@ -999,7 +1003,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
               const SizedBox(height: 8),
               const Text(
                 'Select a quick demo sample on the left or paste a transcript to begin.',
-                style: TextStyle(fontSize: 13, color: Colors.grey),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ],
           ),
