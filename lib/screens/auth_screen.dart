@@ -352,11 +352,14 @@ class _AuthScreenState extends State<AuthScreen> {
                           onPressed: auth.isLoading
                               ? null
                               : () async {
+                                  FocusScope.of(context).unfocus();
+                                  _emailController.clear();
+                                  _passwordController.clear();
                                   final messenger = ScaffoldMessenger.of(
                                     context,
                                   );
                                   final success = await auth.signInWithGoogle();
-                                  if (!success && auth.errorMessage != null) {
+                                  if (!success && auth.errorMessage != null && mounted) {
                                     messenger.showSnackBar(
                                       SnackBar(
                                         content: Text(auth.errorMessage!),
