@@ -7,7 +7,7 @@ class ApiService {
   String baseUrl;
   final http.Client _client = http.Client();
 
-  ApiService({this.baseUrl = 'https://automated-transcription-fastapi-1.onrender.com'});
+  ApiService({this.baseUrl = 'http://127.0.0.1:8000'});
 
   void updateBaseUrl(String newUrl) {
     baseUrl = newUrl.replaceAll(RegExp(r'/+$'), '');

@@ -25,7 +25,7 @@ class MeetingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final apiService = ApiService(baseUrl: 'https://automated-transcription-fastapi-1.onrender.com');
+    final apiService = ApiService(baseUrl: 'http://127.0.0.1:8000');
 
     return MultiProvider(
       providers: [
